@@ -139,8 +139,6 @@ const Input = React.forwardRef(function Input(inProps, ref) {
   const {
     disableUnderline = false,
     components = {},
-    componentsProps: componentsPropsProp,
-    fullWidth = false,
     inputComponent = 'input',
     multiline = false,
     slotProps,
@@ -155,8 +153,8 @@ const Input = React.forwardRef(function Input(inProps, ref) {
   const inputComponentsProps = { root: { ownerState } };
 
   const componentsProps =
-    slotProps ?? componentsPropsProp
-      ? deepmerge(slotProps ?? componentsPropsProp, inputComponentsProps)
+    slotProps
+      ? deepmerge(slotProps, inputComponentsProps)
       : inputComponentsProps;
 
   const RootSlot = slots.root ?? components.Root ?? InputRoot;
@@ -166,7 +164,6 @@ const Input = React.forwardRef(function Input(inProps, ref) {
     <InputBase
       slots={{ root: RootSlot, input: InputSlot }}
       slotProps={componentsProps}
-      fullWidth={fullWidth}
       inputComponent={inputComponent}
       multiline={multiline}
       ref={ref}
@@ -178,10 +175,6 @@ const Input = React.forwardRef(function Input(inProps, ref) {
 });
 
 Input.propTypes /* remove-proptypes */ = {
-  // ┌────────────────────────────── Warning ──────────────────────────────┐
-  // │ These PropTypes are generated from the TypeScript type definitions. │
-  // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
-  // └─────────────────────────────────────────────────────────────────────┘
   /**
    * This prop helps users to fill forms faster, especially on mobile devices.
    * The name can be confusing, as it's more like an autofill.
@@ -207,29 +200,6 @@ Input.propTypes /* remove-proptypes */ = {
     PropTypes.string,
   ]),
   /**
-   * The components used for each slot inside.
-   *
-   * @deprecated use the `slots` prop instead. This prop will be removed in v7. See [Migrating from deprecated APIs](/material-ui/migration/migrating-from-deprecated-apis/) for more details.
-   *
-   * @default {}
-   */
-  components: PropTypes.shape({
-    Input: PropTypes.elementType,
-    Root: PropTypes.elementType,
-  }),
-  /**
-   * The extra props for the slot components.
-   * You can override the existing props or add new ones.
-   *
-   * @deprecated use the `slotProps` prop instead. This prop will be removed in v7. See [Migrating from deprecated APIs](/material-ui/migration/migrating-from-deprecated-apis/) for more details.
-   *
-   * @default {}
-   */
-  componentsProps: PropTypes.shape({
-    input: PropTypes.object,
-    root: PropTypes.object,
-  }),
-  /**
    * The default value. Use when the component is not controlled.
    */
   defaultValue: PropTypes.any,
@@ -252,11 +222,6 @@ Input.propTypes /* remove-proptypes */ = {
    * The prop defaults to the value (`false`) inherited from the parent FormControl component.
    */
   error: PropTypes.bool,
-  /**
-   * If `true`, the `input` will take up the full width of its container.
-   * @default false
-   */
-  fullWidth: PropTypes.bool,
   /**
    * The id of the `input` element.
    */

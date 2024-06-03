@@ -16,7 +16,7 @@ import ButtonGroupButtonContext from '../ButtonGroup/ButtonGroupButtonContext';
 const useThemeProps = createUseThemeProps('MuiButton');
 
 const useUtilityClasses = (ownerState) => {
-  const { color, disableElevation, fullWidth, size, variant, classes } = ownerState;
+  const { color, size, variant, classes } = ownerState;
 
   const slots = {
     root: [
@@ -26,8 +26,6 @@ const useUtilityClasses = (ownerState) => {
       `size${capitalize(size)}`,
       `${variant}Size${capitalize(size)}`,
       `color${capitalize(color)}`,
-      disableElevation && 'disableElevation',
-      fullWidth && 'fullWidth',
     ],
     label: ['label'],
     startIcon: ['icon', 'startIcon', `iconSize${capitalize(size)}`],
@@ -83,8 +81,6 @@ const ButtonRoot = styled(ButtonBase, {
       styles[`size${capitalize(ownerState.size)}`],
       styles[`${ownerState.variant}Size${capitalize(ownerState.size)}`],
       ownerState.color === 'inherit' && styles.colorInherit,
-      ownerState.disableElevation && styles.disableElevation,
-      ownerState.fullWidth && styles.fullWidth,
     ];
   },
 })(({ theme }) => {
@@ -272,30 +268,6 @@ const ButtonRoot = styled(ButtonBase, {
           fontSize: theme.typography.pxToRem(15),
         },
       },
-      {
-        props: {
-          disableElevation: true,
-        },
-        style: {
-          boxShadow: 'none',
-          '&:hover': {
-            boxShadow: 'none',
-          },
-          [`&.${buttonClasses.focusVisible}`]: {
-            boxShadow: 'none',
-          },
-          '&:active': {
-            boxShadow: 'none',
-          },
-          [`&.${buttonClasses.disabled}`]: {
-            boxShadow: 'none',
-          },
-        },
-      },
-      {
-        props: { fullWidth: true },
-        style: { width: '100%' },
-      },
     ],
   };
 });
@@ -358,11 +330,9 @@ const Button = React.forwardRef(function Button(inProps, ref) {
     component = 'button',
     className,
     disabled = false,
-    disableElevation = false,
     disableFocusRipple = false,
     endIcon: endIconProp,
     focusVisibleClassName,
-    fullWidth = false,
     size = 'medium',
     startIcon: startIconProp,
     type,
@@ -375,9 +345,7 @@ const Button = React.forwardRef(function Button(inProps, ref) {
     color,
     component,
     disabled,
-    disableElevation,
     disableFocusRipple,
-    fullWidth,
     size,
     type,
     variant,
@@ -457,11 +425,6 @@ Button.propTypes /* remove-proptypes */ = {
    */
   disabled: PropTypes.bool,
   /**
-   * If `true`, no elevation is used.
-   * @default false
-   */
-  disableElevation: PropTypes.bool,
-  /**
    * If `true`, the  keyboard focus ripple is disabled.
    * @default false
    */
@@ -482,16 +445,6 @@ Button.propTypes /* remove-proptypes */ = {
    * @ignore
    */
   focusVisibleClassName: PropTypes.string,
-  /**
-   * If `true`, the button will take up the full width of its container.
-   * @default false
-   */
-  fullWidth: PropTypes.bool,
-  /**
-   * The URL to link to when the button is clicked.
-   * If defined, an `a` element will be used as the root node.
-   */
-  href: PropTypes.string,
   /**
    * The size of the component.
    * `small` is equivalent to the dense button styling.

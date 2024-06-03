@@ -49,11 +49,7 @@ export const MenuPaper = styled(PopoverPaper, {
   slot: 'Paper',
   overridesResolver: (props, styles) => styles.paper,
 })({
-  // specZ: The maximum height of a simple menu should be one or more rows less than the view
-  // height. This ensures a tappable area outside of the simple menu with which to dismiss
-  // the menu.
   maxHeight: 'calc(100% - 96px)',
-  // Add iOS momentum scrolling for iOS < 13.0
   WebkitOverflowScrolling: 'touch',
 });
 
@@ -62,7 +58,6 @@ const MenuMenuList = styled(MenuList, {
   slot: 'List',
   overridesResolver: (props, styles) => styles.list,
 })({
-  // We disable the focus ring for mouse, touch and keyboard users.
   outline: 0,
 });
 
@@ -73,7 +68,6 @@ const Menu = React.forwardRef(function Menu(inProps, ref) {
     autoFocus = true,
     children,
     className,
-    disableAutoFocusItem = false,
     MenuListProps = {},
     onClose,
     open,
@@ -81,7 +75,6 @@ const Menu = React.forwardRef(function Menu(inProps, ref) {
     PopoverClasses,
     transitionDuration = 'auto',
     TransitionProps: { onEntering, ...TransitionProps } = {},
-    variant = 'selectedMenu',
     slots = {},
     slotProps = {},
     ...other
@@ -92,18 +85,16 @@ const Menu = React.forwardRef(function Menu(inProps, ref) {
   const ownerState = {
     ...props,
     autoFocus,
-    disableAutoFocusItem,
     MenuListProps,
     onEntering,
     PaperProps,
     transitionDuration,
     TransitionProps,
-    variant,
   };
 
   const classes = useUtilityClasses(ownerState);
 
-  const autoFocusItem = autoFocus && !disableAutoFocusItem && open;
+  const autoFocusItem = autoFocus && open;
 
   const menuListActionsRef = React.useRef(null);
 
@@ -129,15 +120,7 @@ const Menu = React.forwardRef(function Menu(inProps, ref) {
     }
   };
 
-  /**
-   * the index of the item should receive focus
-   * in a `variant="selectedMenu"` it's the first `selected` item
-   * otherwise it's the very first item.
-   */
   let activeItemIndex = -1;
-  // since we inject focus related props into children we have to do a lookahead
-  // to check if there is a `selected` item. We're looking for the last `selected`
-  // item and use the first valid item as a fallback
   React.Children.map(children, (child, index) => {
     if (!React.isValidElement(child)) {
       return;
@@ -155,11 +138,7 @@ const Menu = React.forwardRef(function Menu(inProps, ref) {
     }
 
     if (!child.props.disabled) {
-      if (variant === 'selectedMenu' && child.props.selected) {
-        activeItemIndex = index;
-      } else if (activeItemIndex === -1) {
-        activeItemIndex = index;
-      }
+      activeItemIndex = index;
     }
   });
 
@@ -207,9 +186,8 @@ const Menu = React.forwardRef(function Menu(inProps, ref) {
       <MenuMenuList
         onKeyDown={handleListKeyDown}
         actions={menuListActionsRef}
-        autoFocus={autoFocus && (activeItemIndex === -1 || disableAutoFocusItem)}
+        autoFocus={autoFocus && activeItemIndex === -1}
         autoFocusItem={autoFocusItem}
-        variant={variant}
         {...MenuListProps}
         className={clsx(classes.list, MenuListProps.className)}
       >
@@ -252,14 +230,6 @@ Menu.propTypes /* remove-proptypes */ = {
    * @ignore
    */
   className: PropTypes.string,
-  /**
-   * When opening the menu will not focus the active item but the `[role="menu"]`
-   * unless `autoFocus` is also set to `false`. Not using the default means not
-   * following WAI-ARIA authoring practices. Please be considerate about possible
-   * accessibility implications.
-   * @default false
-   */
-  disableAutoFocusItem: PropTypes.bool,
   /**
    * Props applied to the [`MenuList`](/material-ui/api/menu-list/) element.
    * @default {}
@@ -327,11 +297,6 @@ Menu.propTypes /* remove-proptypes */ = {
    * @default {}
    */
   TransitionProps: PropTypes.object,
-  /**
-   * The variant to use. Use `menu` to prevent selected items from impacting the initial focus.
-   * @default 'selectedMenu'
-   */
-  variant: PropTypes.oneOf(['menu', 'selectedMenu']),
 };
 
 export default Menu;

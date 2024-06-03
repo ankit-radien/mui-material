@@ -17,21 +17,20 @@ import { createUseThemeProps, styled } from '../zero-styled';
 const useThemeProps = createUseThemeProps('MuiCheckbox');
 
 const useUtilityClasses = (ownerState) => {
-  const { classes, indeterminate, color, size } = ownerState;
+  const { classes, indeterminate, color } = ownerState;
 
   const slots = {
     root: [
       'root',
       indeterminate && 'indeterminate',
       `color${capitalize(color)}`,
-      `size${capitalize(size)}`,
     ],
   };
 
   const composedClasses = composeClasses(slots, getCheckboxUtilityClass, classes);
 
   return {
-    ...classes, // forward the disabled and checked classes to the SwitchBase
+    ...classes,
     ...composedClasses,
   };
 };
@@ -46,7 +45,6 @@ const CheckboxRoot = styled(SwitchBase, {
     return [
       styles.root,
       ownerState.indeterminate && styles.indeterminate,
-      styles[`size${capitalize(ownerState.size)}`],
       ownerState.color !== 'default' && styles[`color${capitalize(ownerState.color)}`],
     ];
   },
@@ -89,10 +87,8 @@ const CheckboxRoot = styled(SwitchBase, {
         },
       })),
     {
-      // Should be last to override other colors
       props: { disableRipple: false },
       style: {
-        // Reset on touch devices, it doesn't add specificity
         '&:hover': {
           '@media (hover: none)': {
             backgroundColor: 'transparent',
@@ -116,8 +112,6 @@ const Checkbox = React.forwardRef(function Checkbox(inProps, ref) {
     indeterminate = false,
     indeterminateIcon: indeterminateIconProp = defaultIndeterminateIcon,
     inputProps,
-    size = 'medium',
-    disableRipple = false,
     className,
     ...other
   } = props;
@@ -127,10 +121,8 @@ const Checkbox = React.forwardRef(function Checkbox(inProps, ref) {
 
   const ownerState = {
     ...props,
-    disableRipple,
     color,
     indeterminate,
-    size,
   };
 
   const classes = useUtilityClasses(ownerState);
@@ -143,10 +135,10 @@ const Checkbox = React.forwardRef(function Checkbox(inProps, ref) {
         ...inputProps,
       }}
       icon={React.cloneElement(icon, {
-        fontSize: icon.props.fontSize ?? size,
+        fontSize: icon.props.fontSize,
       })}
       checkedIcon={React.cloneElement(indeterminateIcon, {
-        fontSize: indeterminateIcon.props.fontSize ?? size,
+        fontSize: indeterminateIcon.props.fontSize,
       })}
       ownerState={ownerState}
       ref={ref}
@@ -158,10 +150,6 @@ const Checkbox = React.forwardRef(function Checkbox(inProps, ref) {
 });
 
 Checkbox.propTypes /* remove-proptypes */ = {
-  // ┌────────────────────────────── Warning ──────────────────────────────┐
-  // │ These PropTypes are generated from the TypeScript type definitions. │
-  // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
-  // └─────────────────────────────────────────────────────────────────────┘
   /**
    * If `true`, the component is checked.
    */
@@ -198,11 +186,6 @@ Checkbox.propTypes /* remove-proptypes */ = {
    * @default false
    */
   disabled: PropTypes.bool,
-  /**
-   * If `true`, the ripple effect is disabled.
-   * @default false
-   */
-  disableRipple: PropTypes.bool,
   /**
    * The icon to display when the component is unchecked.
    * @default <CheckBoxOutlineBlankIcon />
@@ -245,15 +228,6 @@ Checkbox.propTypes /* remove-proptypes */ = {
    * @default false
    */
   required: PropTypes.bool,
-  /**
-   * The size of the component.
-   * `small` is equivalent to the dense checkbox styling.
-   * @default 'medium'
-   */
-  size: PropTypes /* @typescript-to-proptypes-ignore */.oneOfType([
-    PropTypes.oneOf(['medium', 'small']),
-    PropTypes.string,
-  ]),
   /**
    * The system prop that allows defining system overrides as well as additional CSS styles.
    */

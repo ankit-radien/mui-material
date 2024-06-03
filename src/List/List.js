@@ -10,10 +10,10 @@ import { getListUtilityClass } from './listClasses';
 const useThemeProps = createUseThemeProps('MuiList');
 
 const useUtilityClasses = (ownerState) => {
-  const { classes, disablePadding, dense, subheader } = ownerState;
+  const { classes, subheader } = ownerState;
 
   const slots = {
-    root: ['root', !disablePadding && 'padding', dense && 'dense', subheader && 'subheader'],
+    root: ['root', subheader && 'subheader'],
   };
 
   return composeClasses(slots, getListUtilityClass, classes);
@@ -27,8 +27,6 @@ const ListRoot = styled('ul', {
 
     return [
       styles.root,
-      !ownerState.disablePadding && styles.padding,
-      ownerState.dense && styles.dense,
       ownerState.subheader && styles.subheader,
     ];
   },
@@ -38,13 +36,6 @@ const ListRoot = styled('ul', {
   padding: 0,
   position: 'relative',
   variants: [
-    {
-      props: ({ ownerState }) => !ownerState.disablePadding,
-      style: {
-        paddingTop: 8,
-        paddingBottom: 8,
-      },
-    },
     {
       props: ({ ownerState }) => ownerState.subheader,
       style: {
@@ -60,25 +51,19 @@ const List = React.forwardRef(function List(inProps, ref) {
     children,
     className,
     component = 'ul',
-    dense = false,
-    disablePadding = false,
     subheader,
     ...other
   } = props;
 
-  const context = React.useMemo(() => ({ dense }), [dense]);
-
   const ownerState = {
     ...props,
     component,
-    dense,
-    disablePadding,
   };
 
   const classes = useUtilityClasses(ownerState);
 
   return (
-    <ListContext.Provider value={context}>
+    <ListContext.Provider value={{}}>
       <ListRoot
         as={component}
         className={clsx(classes.root, className)}
@@ -115,18 +100,6 @@ List.propTypes /* remove-proptypes */ = {
    * Either a string to use a HTML element or a component.
    */
   component: PropTypes.elementType,
-  /**
-   * If `true`, compact vertical padding designed for keyboard and mouse input is used for
-   * the list and list items.
-   * The prop is available to descendant components as the `dense` context.
-   * @default false
-   */
-  dense: PropTypes.bool,
-  /**
-   * If `true`, vertical padding is removed from the list.
-   * @default false
-   */
-  disablePadding: PropTypes.bool,
   /**
    * The content of the subheader, normally `ListSubheader`.
    */

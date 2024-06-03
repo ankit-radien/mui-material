@@ -164,7 +164,6 @@ const Alert = React.forwardRef(function Alert(inProps, ref) {
     className,
     closeText = 'Close',
     color,
-    components = {},
     componentsProps = {},
     icon,
     iconMapping = defaultIconMapping,
@@ -188,11 +187,7 @@ const Alert = React.forwardRef(function Alert(inProps, ref) {
   const classes = useUtilityClasses(ownerState);
 
   const externalForwardedProps = {
-    slots: {
-      closeButton: components.CloseButton,
-      closeIcon: components.CloseIcon,
-      ...slots,
-    },
+    slots,
     slotProps: {
       ...componentsProps,
       ...slotProps,
@@ -289,17 +284,6 @@ Alert.propTypes /* remove-proptypes */ = {
     PropTypes.string,
   ]),
   /**
-   * The components used for each slot inside.
-   *
-   * @deprecated use the `slots` prop instead. This prop will be removed in v7. See [Migrating from deprecated APIs](/material-ui/migration/migrating-from-deprecated-apis/) for more details.
-   *
-   * @default {}
-   */
-  components: PropTypes.shape({
-    CloseButton: PropTypes.elementType,
-    CloseIcon: PropTypes.elementType,
-  }),
-  /**
    * The extra props for the slot components.
    * You can override the existing props or add new ones.
    *
@@ -364,14 +348,6 @@ Alert.propTypes /* remove-proptypes */ = {
     closeButton: PropTypes.elementType,
     closeIcon: PropTypes.elementType,
   }),
-  /**
-   * The system prop that allows defining system overrides as well as additional CSS styles.
-   */
-  sx: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])),
-    PropTypes.func,
-    PropTypes.object,
-  ]),
   /**
    * The variant to use.
    * @default 'standard'

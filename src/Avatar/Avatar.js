@@ -11,10 +11,10 @@ import useSlot from '../utils/useSlot';
 const useThemeProps = createUseThemeProps('MuiAvatar');
 
 const useUtilityClasses = (ownerState) => {
-  const { classes, variant, colorDefault } = ownerState;
+  const { classes, colorDefault } = ownerState;
 
   const slots = {
-    root: ['root', variant, colorDefault && 'colorDefault'],
+    root: ['root', colorDefault && 'colorDefault'],
     img: ['img'],
     fallback: ['fallback'],
   };
@@ -30,7 +30,6 @@ const AvatarRoot = styled('div', {
 
     return [
       styles.root,
-      styles[ownerState.variant],
       ownerState.colorDefault && styles.colorDefault,
     ];
   },
@@ -86,11 +85,8 @@ const AvatarImg = styled('img', {
   width: '100%',
   height: '100%',
   textAlign: 'center',
-  // Handle non-square image.
   objectFit: 'cover',
-  // Hide alt text.
   color: 'transparent',
-  // Hide the image broken icon, only works on Chrome.
   textIndent: 10000,
 });
 
@@ -145,23 +141,19 @@ function useLoaded({ crossOrigin, referrerPolicy, src, srcSet }) {
 const Avatar = React.forwardRef(function Avatar(inProps, ref) {
   const props = useThemeProps({ props: inProps, name: 'MuiAvatar' });
   const {
-    alt,
     children: childrenProp,
     className,
-    component = 'div',
     slots = {},
     slotProps = {},
     imgProps,
     sizes,
     src,
     srcSet,
-    variant = 'circular',
     ...other
   } = props;
 
   let children = null;
 
-  // Use a hook instead of onError on the img element to support server-side rendering.
   const loaded = useLoaded({ ...imgProps, src, srcSet });
   const hasImg = src || srcSet;
   const hasImgNotFailing = hasImg && loaded !== 'error';
@@ -169,10 +161,7 @@ const Avatar = React.forwardRef(function Avatar(inProps, ref) {
   const ownerState = {
     ...props,
     colorDefault: !hasImgNotFailing,
-    component,
-    variant,
   };
-  // This issue explains why this is required: https://github.com/mui/material-ui/issues/42184
   delete ownerState.ownerState;
 
   const classes = useUtilityClasses(ownerState);
@@ -184,25 +173,20 @@ const Avatar = React.forwardRef(function Avatar(inProps, ref) {
       slots,
       slotProps: { img: { ...imgProps, ...slotProps.img } },
     },
-    additionalProps: { alt, src, srcSet, sizes },
+    additionalProps: { src, srcSet, sizes },
     ownerState,
   });
 
   if (hasImgNotFailing) {
     children = <ImgSlot {...imgSlotProps} />;
-    // We only render valid children, non valid children are rendered with a fallback
-    // We consider that invalid children are all falsy values, except 0, which is valid.
   } else if (!!childrenProp || childrenProp === 0) {
     children = childrenProp;
-  } else if (hasImg && alt) {
-    children = alt[0];
   } else {
     children = <AvatarFallback ownerState={ownerState} className={classes.fallback} />;
   }
 
   return (
     <AvatarRoot
-      as={component}
       className={clsx(classes.root, className)}
       ref={ref}
       {...other}
@@ -214,15 +198,6 @@ const Avatar = React.forwardRef(function Avatar(inProps, ref) {
 });
 
 Avatar.propTypes /* remove-proptypes */ = {
-  // ┌────────────────────────────── Warning ──────────────────────────────┐
-  // │ These PropTypes are generated from the TypeScript type definitions. │
-  // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
-  // └─────────────────────────────────────────────────────────────────────┘
-  /**
-   * Used in combination with `src` or `srcSet` to
-   * provide an alt attribute for the rendered `img` element.
-   */
-  alt: PropTypes.string,
   /**
    * Used to render icon or text elements inside the Avatar if `src` is not set.
    * This can be an element, or just a string.
@@ -236,11 +211,6 @@ Avatar.propTypes /* remove-proptypes */ = {
    * @ignore
    */
   className: PropTypes.string,
-  /**
-   * The component used for the root node.
-   * Either a string to use a HTML element or a component.
-   */
-  component: PropTypes.elementType,
   /**
    * [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attributes) applied to the `img` element if the component is used to display an image.
    * It can be used to listen for the loading error event.
@@ -274,22 +244,6 @@ Avatar.propTypes /* remove-proptypes */ = {
    * Use this attribute for responsive image display.
    */
   srcSet: PropTypes.string,
-  /**
-   * The system prop that allows defining system overrides as well as additional CSS styles.
-   */
-  sx: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])),
-    PropTypes.func,
-    PropTypes.object,
-  ]),
-  /**
-   * The shape of the avatar.
-   * @default 'circular'
-   */
-  variant: PropTypes /* @typescript-to-proptypes-ignore */.oneOfType([
-    PropTypes.oneOf(['circular', 'rounded', 'square']),
-    PropTypes.string,
-  ]),
 };
 
 export default Avatar;

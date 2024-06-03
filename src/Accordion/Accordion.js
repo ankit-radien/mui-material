@@ -16,7 +16,7 @@ import accordionClasses, { getAccordionUtilityClass } from './accordionClasses';
 const useThemeProps = createUseThemeProps('MuiAccordion');
 
 const useUtilityClasses = (ownerState) => {
-  const { classes, square, expanded, disabled, disableGutters } = ownerState;
+  const { classes, square, expanded, disabled } = ownerState;
 
   const slots = {
     root: [
@@ -24,7 +24,6 @@ const useUtilityClasses = (ownerState) => {
       !square && 'rounded',
       expanded && 'expanded',
       disabled && 'disabled',
-      !disableGutters && 'gutters',
     ],
     region: ['region'],
   };
@@ -42,7 +41,6 @@ const AccordionRoot = styled(Paper, {
       { [`& .${accordionClasses.region}`]: styles.region },
       styles.root,
       !ownerState.square && styles.rounded,
-      !ownerState.disableGutters && styles.gutters,
     ];
   },
 })(
@@ -113,14 +111,6 @@ const AccordionRoot = styled(Paper, {
           },
         },
       },
-      {
-        props: (props) => !props.disableGutters,
-        style: {
-          [`&.${accordionClasses.expanded}`]: {
-            margin: '16px 0',
-          },
-        },
-      },
     ],
   }),
 );
@@ -132,7 +122,6 @@ const Accordion = React.forwardRef(function Accordion(inProps, ref) {
     className,
     defaultExpanded = false,
     disabled = false,
-    disableGutters = false,
     expanded: expandedProp,
     onChange,
     square = false,
@@ -163,15 +152,14 @@ const Accordion = React.forwardRef(function Accordion(inProps, ref) {
 
   const [summary, ...children] = React.Children.toArray(childrenProp);
   const contextValue = React.useMemo(
-    () => ({ expanded, disabled, disableGutters, toggle: handleChange }),
-    [expanded, disabled, disableGutters, handleChange],
+    () => ({ expanded, disabled, toggle: handleChange }),
+    [expanded, disabled, handleChange],
   );
 
   const ownerState = {
     ...props,
     square,
     disabled,
-    disableGutters,
     expanded,
   };
 
@@ -254,11 +242,6 @@ Accordion.propTypes /* remove-proptypes */ = {
    */
   disabled: PropTypes.bool,
   /**
-   * If `true`, it removes the margin between two expanded accordion items and the increase of height.
-   * @default false
-   */
-  disableGutters: PropTypes.bool,
-  /**
    * If `true`, expands the accordion, otherwise collapse it.
    * Setting this prop enables control over the accordion.
    */
@@ -289,14 +272,6 @@ Accordion.propTypes /* remove-proptypes */ = {
    * @default false
    */
   square: PropTypes.bool,
-  /**
-   * The system prop that allows defining system overrides as well as additional CSS styles.
-   */
-  sx: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])),
-    PropTypes.func,
-    PropTypes.object,
-  ]),
   /**
    * The component used for the transition.
    * [Follow this guide](/material-ui/transitions/#transitioncomponent-prop) to learn more about the requirements for this component.

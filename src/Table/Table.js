@@ -56,8 +56,6 @@ const Table = React.forwardRef(function Table(inProps, ref) {
   const {
     className,
     component = defaultComponent,
-    padding = 'normal',
-    size = 'medium',
     stickyHeader = false,
     ...other
   } = props;
@@ -65,16 +63,14 @@ const Table = React.forwardRef(function Table(inProps, ref) {
   const ownerState = {
     ...props,
     component,
-    padding,
-    size,
     stickyHeader,
   };
 
   const classes = useUtilityClasses(ownerState);
 
   const table = React.useMemo(
-    () => ({ padding, size, stickyHeader }),
-    [padding, size, stickyHeader],
+    () => ({ stickyHeader }),
+    [stickyHeader],
   );
 
   return (
@@ -113,19 +109,6 @@ Table.propTypes /* remove-proptypes */ = {
    * Either a string to use a HTML element or a component.
    */
   component: PropTypes.elementType,
-  /**
-   * Allows TableCells to inherit padding of the Table.
-   * @default 'normal'
-   */
-  padding: PropTypes.oneOf(['checkbox', 'none', 'normal']),
-  /**
-   * Allows TableCells to inherit size of the Table.
-   * @default 'medium'
-   */
-  size: PropTypes /* @typescript-to-proptypes-ignore */.oneOfType([
-    PropTypes.oneOf(['medium', 'small']),
-    PropTypes.string,
-  ]),
   /**
    * Set the header sticky.
    * @default false

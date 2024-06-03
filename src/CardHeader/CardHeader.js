@@ -74,8 +74,6 @@ const CardHeader = React.forwardRef(function CardHeader(inProps, ref) {
     action,
     avatar,
     className,
-    component = 'div',
-    disableTypography = false,
     subheader: subheaderProp,
     subheaderTypographyProps,
     title: titleProp,
@@ -85,14 +83,12 @@ const CardHeader = React.forwardRef(function CardHeader(inProps, ref) {
 
   const ownerState = {
     ...props,
-    component,
-    disableTypography,
   };
 
   const classes = useUtilityClasses(ownerState);
 
   let title = titleProp;
-  if (title != null && title.type !== Typography && !disableTypography) {
+  if (title != null && title.type !== Typography) {
     title = (
       <Typography
         variant={avatar ? 'body2' : 'h5'}
@@ -107,7 +103,7 @@ const CardHeader = React.forwardRef(function CardHeader(inProps, ref) {
   }
 
   let subheader = subheaderProp;
-  if (subheader != null && subheader.type !== Typography && !disableTypography) {
+  if (subheader != null && subheader.type !== Typography) {
     subheader = (
       <Typography
         variant={avatar ? 'body2' : 'body1'}
@@ -125,7 +121,6 @@ const CardHeader = React.forwardRef(function CardHeader(inProps, ref) {
   return (
     <CardHeaderRoot
       className={clsx(classes.root, className)}
-      as={component}
       ref={ref}
       ownerState={ownerState}
       {...other}
@@ -150,10 +145,6 @@ const CardHeader = React.forwardRef(function CardHeader(inProps, ref) {
 });
 
 CardHeader.propTypes /* remove-proptypes */ = {
-  // ┌────────────────────────────── Warning ──────────────────────────────┐
-  // │ These PropTypes are generated from the TypeScript type definitions. │
-  // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
-  // └─────────────────────────────────────────────────────────────────────┘
   /**
    * The action to display in the card header.
    */
@@ -174,19 +165,6 @@ CardHeader.propTypes /* remove-proptypes */ = {
    * @ignore
    */
   className: PropTypes.string,
-  /**
-   * The component used for the root node.
-   * Either a string to use a HTML element or a component.
-   */
-  component: PropTypes.elementType,
-  /**
-   * If `true`, `subheader` and `title` won't be wrapped by a Typography component.
-   * This can be useful to render an alternative Typography variant by wrapping
-   * the `title` text, and optional `subheader` text
-   * with the Typography component.
-   * @default false
-   */
-  disableTypography: PropTypes.bool,
   /**
    * The content of the component.
    */

@@ -37,15 +37,12 @@ const BottomNavigation = React.forwardRef(function BottomNavigation(inProps, ref
     className,
     component = 'div',
     onChange,
-    showLabels = false,
-    value,
     ...other
   } = props;
 
   const ownerState = {
     ...props,
     component,
-    showLabels,
   };
 
   const classes = useUtilityClasses(ownerState);
@@ -77,8 +74,8 @@ const BottomNavigation = React.forwardRef(function BottomNavigation(inProps, ref
         const childValue = child.props.value === undefined ? childIndex : child.props.value;
 
         return React.cloneElement(child, {
-          selected: childValue === value,
-          showLabel: child.props.showLabel !== undefined ? child.props.showLabel : showLabels,
+          selected: false,
+          showLabel: child.props.showLabel !== undefined ? child.props.showLabel : false,
           value: childValue,
           onChange,
         });
@@ -88,10 +85,6 @@ const BottomNavigation = React.forwardRef(function BottomNavigation(inProps, ref
 });
 
 BottomNavigation.propTypes /* remove-proptypes */ = {
-  // ┌────────────────────────────── Warning ──────────────────────────────┐
-  // │ These PropTypes are generated from the TypeScript type definitions. │
-  // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
-  // └─────────────────────────────────────────────────────────────────────┘
   /**
    * The content of the component.
    */
@@ -117,12 +110,6 @@ BottomNavigation.propTypes /* remove-proptypes */ = {
    */
   onChange: PropTypes.func,
   /**
-   * If `true`, all `BottomNavigationAction`s will show their labels.
-   * By default, only the selected `BottomNavigationAction` will show its label.
-   * @default false
-   */
-  showLabels: PropTypes.bool,
-  /**
    * The system prop that allows defining system overrides as well as additional CSS styles.
    */
   sx: PropTypes.oneOfType([
@@ -130,10 +117,6 @@ BottomNavigation.propTypes /* remove-proptypes */ = {
     PropTypes.func,
     PropTypes.object,
   ]),
-  /**
-   * The value of the currently selected `BottomNavigationAction`.
-   */
-  value: PropTypes.any,
 };
 
 export default BottomNavigation;

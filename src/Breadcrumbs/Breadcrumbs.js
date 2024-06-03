@@ -89,9 +89,7 @@ const Breadcrumbs = React.forwardRef(function Breadcrumbs(inProps, ref) {
     slots = {},
     slotProps = {},
     expandText = 'Show path',
-    itemsAfterCollapse = 1,
     itemsBeforeCollapse = 1,
-    maxItems = 8,
     separator = '/',
     ...other
   } = props;
@@ -103,9 +101,7 @@ const Breadcrumbs = React.forwardRef(function Breadcrumbs(inProps, ref) {
     component,
     expanded,
     expandText,
-    itemsAfterCollapse,
     itemsBeforeCollapse,
-    maxItems,
     separator,
   };
 
@@ -122,29 +118,11 @@ const Breadcrumbs = React.forwardRef(function Breadcrumbs(inProps, ref) {
     const handleClickExpand = () => {
       setExpanded(true);
 
-      // The clicked element received the focus but gets removed from the DOM.
-      // Let's keep the focus in the component after expanding.
-      // Moving it to the <ol> or <nav> does not cause any announcement in NVDA.
-      // By moving it to some link/button at least we have some announcement.
       const focusable = listRef.current.querySelector('a[href],button,[tabindex]');
       if (focusable) {
         focusable.focus();
       }
     };
-
-    // This defends against someone passing weird input, to ensure that if all
-    // items would be shown anyway, we just show all items without the EllipsisItem
-    if (itemsBeforeCollapse + itemsAfterCollapse >= allItems.length) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error(
-          [
-            'MUI: You have provided an invalid combination of props to the Breadcrumbs.',
-            `itemsAfterCollapse={${itemsAfterCollapse}} + itemsBeforeCollapse={${itemsBeforeCollapse}} >= maxItems={${maxItems}}`,
-          ].join('\n'),
-        );
-      }
-      return allItems;
-    }
 
     return [
       ...allItems.slice(0, itemsBeforeCollapse),
@@ -155,7 +133,7 @@ const Breadcrumbs = React.forwardRef(function Breadcrumbs(inProps, ref) {
         slotProps={{ collapsedIcon: collapsedIconSlotProps }}
         onClick={handleClickExpand}
       />,
-      ...allItems.slice(allItems.length - itemsAfterCollapse, allItems.length),
+      ...allItems.slice(allItems.length - itemsBeforeCollapse, allItems.length),
     ];
   };
 
@@ -191,7 +169,7 @@ const Breadcrumbs = React.forwardRef(function Breadcrumbs(inProps, ref) {
     >
       <BreadcrumbsOl className={classes.ol} ref={listRef} ownerState={ownerState}>
         {insertSeparators(
-          expanded || (maxItems && allItems.length <= maxItems)
+          expanded || allItems.length <= 8
             ? allItems
             : renderItemsBeforeAndAfter(allItems),
           classes.separator,
@@ -204,10 +182,6 @@ const Breadcrumbs = React.forwardRef(function Breadcrumbs(inProps, ref) {
 });
 
 Breadcrumbs.propTypes /* remove-proptypes */ = {
-  // ┌────────────────────────────── Warning ──────────────────────────────┐
-  // │ These PropTypes are generated from the TypeScript type definitions. │
-  // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
-  // └─────────────────────────────────────────────────────────────────────┘
   /**
    * The content of the component.
    */
@@ -233,22 +207,10 @@ Breadcrumbs.propTypes /* remove-proptypes */ = {
    */
   expandText: PropTypes.string,
   /**
-   * If max items is exceeded, the number of items to show after the ellipsis.
-   * @default 1
-   */
-  itemsAfterCollapse: integerPropType,
-  /**
    * If max items is exceeded, the number of items to show before the ellipsis.
    * @default 1
    */
   itemsBeforeCollapse: integerPropType,
-  /**
-   * Specifies the maximum number of breadcrumbs to display. When there are more
-   * than the maximum number, only the first `itemsBeforeCollapse` and last `itemsAfterCollapse`
-   * will be shown, with an ellipsis in between.
-   * @default 8
-   */
-  maxItems: integerPropType,
   /**
    * Custom separator node.
    * @default '/'

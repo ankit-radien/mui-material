@@ -13,14 +13,13 @@ import iconButtonClasses, { getIconButtonUtilityClass } from './iconButtonClasse
 const useThemeProps = createUseThemeProps('MuiIconButton');
 
 const useUtilityClasses = (ownerState) => {
-  const { classes, disabled, color, edge, size } = ownerState;
+  const { classes, disabled, color, size } = ownerState;
 
   const slots = {
     root: [
       'root',
       disabled && 'disabled',
       color !== 'default' && `color${capitalize(color)}`,
-      edge && `edge${capitalize(edge)}`,
       `size${capitalize(size)}`,
     ],
   };
@@ -37,7 +36,6 @@ const IconButtonRoot = styled(ButtonBase, {
     return [
       styles.root,
       ownerState.color !== 'default' && styles[`color${capitalize(ownerState.color)}`],
-      ownerState.edge && styles[`edge${capitalize(ownerState.edge)}`],
       styles[`size${capitalize(ownerState.size)}`],
     ];
   },
@@ -66,30 +64,6 @@ const IconButtonRoot = styled(ButtonBase, {
               backgroundColor: 'transparent',
             },
           },
-        },
-      },
-      {
-        props: { edge: 'start' },
-        style: {
-          marginLeft: -12,
-        },
-      },
-      {
-        props: { edge: 'start', size: 'small' },
-        style: {
-          marginLeft: -3,
-        },
-      },
-      {
-        props: { edge: 'end' },
-        style: {
-          marginRight: -12,
-        },
-      },
-      {
-        props: { edge: 'end', size: 'small' },
-        style: {
-          marginRight: -3,
         },
       },
     ],
@@ -160,7 +134,6 @@ const IconButtonRoot = styled(ButtonBase, {
 const IconButton = React.forwardRef(function IconButton(inProps, ref) {
   const props = useThemeProps({ props: inProps, name: 'MuiIconButton' });
   const {
-    edge = false,
     children,
     className,
     color = 'default',
@@ -172,7 +145,6 @@ const IconButton = React.forwardRef(function IconButton(inProps, ref) {
 
   const ownerState = {
     ...props,
-    edge,
     color,
     disabled,
     disableFocusRipple,
@@ -258,22 +230,6 @@ IconButton.propTypes /* remove-proptypes */ = {
    * @default false
    */
   disableFocusRipple: PropTypes.bool,
-  /**
-   * If `true`, the ripple effect is disabled.
-   *
-   * ⚠️ Without a ripple there is no styling for :focus-visible by default. Be sure
-   * to highlight the element by applying separate styles with the `.Mui-focusVisible` class.
-   * @default false
-   */
-  disableRipple: PropTypes.bool,
-  /**
-   * If given, uses a negative margin to counteract the padding on one
-   * side (this is often helpful for aligning the left or right
-   * side of the icon with content above or below, without ruining the border
-   * size and shape).
-   * @default false
-   */
-  edge: PropTypes.oneOf(['end', 'start', false]),
   /**
    * The size of the component.
    * `small` is equivalent to the dense button styling.

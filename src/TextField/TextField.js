@@ -40,38 +40,6 @@ const TextFieldRoot = styled(FormControl, {
   overridesResolver: (props, styles) => styles.root,
 })({});
 
-/**
- * The `TextField` is a convenience wrapper for the most common cases (80%).
- * It cannot be all things to all people, otherwise the API would grow out of control.
- *
- * ## Advanced Configuration
- *
- * It's important to understand that the text field is a simple abstraction
- * on top of the following components:
- *
- * - [FormControl](/material-ui/api/form-control/)
- * - [InputLabel](/material-ui/api/input-label/)
- * - [FilledInput](/material-ui/api/filled-input/)
- * - [OutlinedInput](/material-ui/api/outlined-input/)
- * - [Input](/material-ui/api/input/)
- * - [FormHelperText](/material-ui/api/form-helper-text/)
- *
- * If you wish to alter the props applied to the `input` element, you can do so as follows:
- *
- * ```jsx
- * const inputProps = {
- *   step: 300,
- * };
- *
- * return <TextField id="time" type="time" inputProps={inputProps} />;
- * ```
- *
- * For advanced cases, please look at the source of TextField by clicking on the
- * "Edit this page" button above. Consider either:
- *
- * - using the upper case props for passing values directly to the components
- * - using the underlying components directly as shown in the demos
- */
 const TextField = React.forwardRef(function TextField(inProps, ref) {
   const props = useThemeProps({ props: inProps, name: 'MuiTextField' });
   const {
@@ -83,12 +51,10 @@ const TextField = React.forwardRef(function TextField(inProps, ref) {
     defaultValue,
     disabled = false,
     error = false,
-    FormHelperTextProps: FormHelperTextPropsProp,
     fullWidth = false,
     helperText,
     id: idOverride,
     InputLabelProps: InputLabelPropsProp,
-    inputProps: inputPropsProp,
     InputProps: InputPropsProp,
     inputRef,
     label,
@@ -145,8 +111,6 @@ const TextField = React.forwardRef(function TextField(inProps, ref) {
     slotProps: {
       input: InputPropsProp,
       inputLabel: InputLabelPropsProp,
-      htmlInput: inputPropsProp,
-      formHelperText: FormHelperTextPropsProp,
       select: SelectPropsProp,
       ...slotProps,
     },
@@ -162,7 +126,6 @@ const TextField = React.forwardRef(function TextField(inProps, ref) {
     inputAdditionalProps.label = label;
   }
   if (select) {
-    // unset defaults from textbox inputs
     if (!SelectPropsProp || !SelectPropsProp.native) {
       inputAdditionalProps.id = undefined;
     }
@@ -178,12 +141,6 @@ const TextField = React.forwardRef(function TextField(inProps, ref) {
 
   const [InputLabelSlot, inputLabelProps] = useSlot('inputLabel', {
     elementType: InputLabel,
-    externalForwardedProps,
-    ownerState,
-  });
-
-  const [HtmlInputSlot, htmlInputProps] = useSlot('htmlInput', {
-    elementType: 'input',
     externalForwardedProps,
     ownerState,
   });
@@ -220,10 +177,6 @@ const TextField = React.forwardRef(function TextField(inProps, ref) {
       onChange={onChange}
       onFocus={onFocus}
       placeholder={placeholder}
-      inputProps={htmlInputProps}
-      slots={{
-        input: slots.htmlInput ? HtmlInputSlot : undefined,
-      }}
       {...inputProps}
     />
   );
@@ -324,11 +277,6 @@ TextField.propTypes /* remove-proptypes */ = {
    */
   error: PropTypes.bool,
   /**
-   * Props applied to the [`FormHelperText`](/material-ui/api/form-helper-text/) element.
-   * @deprecated Use `slotProps.formHelperText` instead. This prop will be removed in v7. See [Migrating from deprecated APIs](/material-ui/migration/migrating-from-deprecated-apis/) for more details.
-   */
-  FormHelperTextProps: PropTypes.object,
-  /**
    * If `true`, the input will take up the full width of its container.
    * @default false
    */
@@ -348,11 +296,6 @@ TextField.propTypes /* remove-proptypes */ = {
    * @deprecated Use `slotProps.inputLabel` instead. This prop will be removed in v7. See [Migrating from deprecated APIs](/material-ui/migration/migrating-from-deprecated-apis/) for more details.
    */
   InputLabelProps: PropTypes.object,
-  /**
-   * [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes) applied to the `input` element.
-   * @deprecated Use `slotProps.htmlInput` instead. This prop will be removed in v7. See [Migrating from deprecated APIs](/material-ui/migration/migrating-from-deprecated-apis/) for more details.
-   */
-  inputProps: PropTypes.object,
   /**
    * Props applied to the Input element.
    * It will be a [`FilledInput`](/material-ui/api/filled-input/),

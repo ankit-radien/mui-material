@@ -22,22 +22,17 @@ export const overridesResolver = (props, styles) => {
 
   return [
     styles.root,
-    ownerState.dense && styles.dense,
     ownerState.divider && styles.divider,
-    !ownerState.disableGutters && styles.gutters,
   ];
 };
 
 const useUtilityClasses = (ownerState) => {
-  const { disabled, dense, divider, disableGutters, selected, classes } = ownerState;
+  const { disabled, divider, classes } = ownerState;
   const slots = {
     root: [
       'root',
-      dense && 'dense',
       disabled && 'disabled',
-      !disableGutters && 'gutters',
       divider && 'divider',
-      selected && 'selected',
     ],
   };
 
@@ -126,37 +121,10 @@ const MenuItemRoot = styled(ButtonBase, {
   },
   variants: [
     {
-      props: ({ ownerState }) => !ownerState.disableGutters,
-      style: {
-        paddingLeft: 16,
-        paddingRight: 16,
-      },
-    },
-    {
       props: ({ ownerState }) => ownerState.divider,
       style: {
         borderBottom: `1px solid ${(theme.vars || theme).palette.divider}`,
         backgroundClip: 'padding-box',
-      },
-    },
-    {
-      props: ({ ownerState }) => !ownerState.dense,
-      style: {
-        [theme.breakpoints.up('sm')]: {
-          minHeight: 'auto',
-        },
-      },
-    },
-    {
-      props: ({ ownerState }) => ownerState.dense,
-      style: {
-        minHeight: 32, // https://m2.material.io/components/menus#specs > Dense
-        paddingTop: 4,
-        paddingBottom: 4,
-        ...theme.typography.body2,
-        [`& .${listItemIconClasses.root} svg`]: {
-          fontSize: '1.25rem',
-        },
       },
     },
   ],
@@ -167,9 +135,7 @@ const MenuItem = React.forwardRef(function MenuItem(inProps, ref) {
   const {
     autoFocus = false,
     component = 'li',
-    dense = false,
     divider = false,
-    disableGutters = false,
     focusVisibleClassName,
     role = 'menuitem',
     tabIndex: tabIndexProp,
@@ -180,10 +146,9 @@ const MenuItem = React.forwardRef(function MenuItem(inProps, ref) {
   const context = React.useContext(ListContext);
   const childContext = React.useMemo(
     () => ({
-      dense: dense || context.dense || false,
-      disableGutters,
+      disableGutters: false,
     }),
-    [context.dense, dense, disableGutters],
+    [],
   );
 
   const menuItemRef = React.useRef(null);
@@ -201,9 +166,7 @@ const MenuItem = React.forwardRef(function MenuItem(inProps, ref) {
 
   const ownerState = {
     ...props,
-    dense: childContext.dense,
     divider,
-    disableGutters,
   };
 
   const classes = useUtilityClasses(props);
@@ -261,20 +224,9 @@ MenuItem.propTypes /* remove-proptypes */ = {
    */
   component: PropTypes.elementType,
   /**
-   * If `true`, compact vertical padding designed for keyboard and mouse input is used.
-   * The prop defaults to the value inherited from the parent Menu component.
-   * @default false
-   */
-  dense: PropTypes.bool,
-  /**
    * @ignore
    */
   disabled: PropTypes.bool,
-  /**
-   * If `true`, the left and right padding is removed.
-   * @default false
-   */
-  disableGutters: PropTypes.bool,
   /**
    * If `true`, a 1px light border is added to the bottom of the menu item.
    * @default false

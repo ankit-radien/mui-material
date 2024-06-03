@@ -12,10 +12,10 @@ import { styled, createUseThemeProps } from '../zero-styled';
 const useThemeProps = createUseThemeProps('MuiPagination');
 
 const useUtilityClasses = (ownerState) => {
-  const { classes, variant } = ownerState;
+  const { classes } = ownerState;
 
   const slots = {
-    root: ['root', variant],
+    root: ['root'],
     ul: ['ul'],
   };
 
@@ -28,7 +28,7 @@ const PaginationRoot = styled('nav', {
   overridesResolver: (props, styles) => {
     const { ownerState } = props;
 
-    return [styles.root, styles[ownerState.variant]];
+    return [styles.root];
   },
 })({});
 
@@ -67,12 +67,10 @@ const Pagination = React.forwardRef(function Pagination(inProps, ref) {
     onChange,
     page,
     renderItem = (item) => <PaginationItem {...item} />,
-    shape = 'circular',
     showFirstButton = false,
     showLastButton = false,
     siblingCount = 1,
     size = 'medium',
-    variant = 'text',
     ...other
   } = props;
 
@@ -89,12 +87,10 @@ const Pagination = React.forwardRef(function Pagination(inProps, ref) {
     hideNextButton,
     hidePrevButton,
     renderItem,
-    shape,
     showFirstButton,
     showLastButton,
     siblingCount,
     size,
-    variant,
   };
 
   const classes = useUtilityClasses(ownerState);
@@ -114,9 +110,7 @@ const Pagination = React.forwardRef(function Pagination(inProps, ref) {
               ...item,
               color,
               'aria-label': getItemAriaLabel(item.type, item.page, item.selected),
-              shape,
               size,
-              variant,
             })}
           </li>
         ))}
@@ -210,11 +204,6 @@ Pagination.propTypes /* remove-proptypes */ = {
    */
   renderItem: PropTypes.func,
   /**
-   * The shape of the pagination items.
-   * @default 'circular'
-   */
-  shape: PropTypes.oneOf(['circular', 'rounded']),
-  /**
    * If `true`, show the first-page button.
    * @default false
    */
@@ -244,14 +233,6 @@ Pagination.propTypes /* remove-proptypes */ = {
     PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])),
     PropTypes.func,
     PropTypes.object,
-  ]),
-  /**
-   * The variant to use.
-   * @default 'text'
-   */
-  variant: PropTypes /* @typescript-to-proptypes-ignore */.oneOfType([
-    PropTypes.oneOf(['outlined', 'text']),
-    PropTypes.string,
   ]),
 };
 

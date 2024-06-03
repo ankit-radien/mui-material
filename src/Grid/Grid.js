@@ -285,13 +285,13 @@ const GridRoot = styled('div', {
   slot: 'Root',
   overridesResolver: (props, styles) => {
     const { ownerState } = props;
-    const { container, direction, item, spacing, wrap, zeroMinWidth, breakpoints } = ownerState;
+    const { container, direction, item, wrap, zeroMinWidth, breakpoints } = ownerState;
 
     let spacingStyles = [];
 
     // in case of grid item
     if (container) {
-      spacingStyles = resolveSpacingStyles(spacing, breakpoints, styles);
+      spacingStyles = resolveSpacingStyles(ownerState.spacing, breakpoints, styles);
     }
 
     const breakpointsStyles = [];
@@ -368,14 +368,14 @@ export function resolveSpacingClasses(spacing, breakpoints) {
 }
 
 const useUtilityClasses = (ownerState) => {
-  const { classes, container, direction, item, spacing, wrap, zeroMinWidth, breakpoints } =
+  const { classes, container, direction, item, wrap, zeroMinWidth, breakpoints } =
     ownerState;
 
   let spacingClasses = [];
 
   // in case of grid item
   if (container) {
-    spacingClasses = resolveSpacingClasses(spacing, breakpoints);
+    spacingClasses = resolveSpacingClasses(ownerState.spacing, breakpoints);
   }
 
   const breakpointsClasses = [];
@@ -418,14 +418,13 @@ const Grid = React.forwardRef(function Grid(inProps, ref) {
     direction = 'row',
     item = false,
     rowSpacing: rowSpacingProp,
-    spacing = 0,
     wrap = 'wrap',
     zeroMinWidth = false,
     ...other
   } = props;
 
-  const rowSpacing = rowSpacingProp || spacing;
-  const columnSpacing = columnSpacingProp || spacing;
+  const rowSpacing = rowSpacingProp;
+  const columnSpacing = columnSpacingProp;
 
   const columnsContext = React.useContext(GridContext);
 
@@ -452,8 +451,6 @@ const Grid = React.forwardRef(function Grid(inProps, ref) {
     columnSpacing,
     wrap,
     zeroMinWidth,
-    spacing,
-    ...breakpointsValues,
     breakpoints: breakpoints.keys,
   };
 
@@ -576,25 +573,6 @@ Grid.propTypes /* remove-proptypes */ = {
    */
   sm: PropTypes.oneOfType([PropTypes.oneOf(['auto']), PropTypes.number, PropTypes.bool]),
   /**
-   * Defines the space between the type `item` components.
-   * It can only be used on a type `container` component.
-   * @default 0
-   */
-  spacing: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string])),
-    PropTypes.number,
-    PropTypes.object,
-    PropTypes.string,
-  ]),
-  /**
-   * The system prop that allows defining system overrides as well as additional CSS styles.
-   */
-  sx: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])),
-    PropTypes.func,
-    PropTypes.object,
-  ]),
-  /**
    * Defines the `flex-wrap` style property.
    * It's applied for all screen sizes.
    * @default 'wrap'
@@ -611,16 +589,6 @@ Grid.propTypes /* remove-proptypes */ = {
    * @default false
    */
   xl: PropTypes.oneOfType([PropTypes.oneOf(['auto']), PropTypes.number, PropTypes.bool]),
-  /**
-   * If a number, it sets the number of columns the grid item uses.
-   * It can't be greater than the total number of columns of the container (12 by default).
-   * If 'auto', the grid item's width matches its content.
-   * If false, the prop is ignored.
-   * If true, the grid item's width grows to use the space available in the grid container.
-   * The value is applied for all the screen sizes with the lowest priority.
-   * @default false
-   */
-  xs: PropTypes.oneOfType([PropTypes.oneOf(['auto']), PropTypes.number, PropTypes.bool]),
   /**
    * If `true`, it sets `min-width: 0` on the item.
    * Refer to the limitations section of the documentation to better understand the use case.
@@ -639,9 +607,7 @@ if (process.env.NODE_ENV !== 'production') {
     lg: requireProp('item'),
     md: requireProp('item'),
     sm: requireProp('item'),
-    spacing: requireProp('container'),
     wrap: requireProp('container'),
-    xs: requireProp('item'),
     zeroMinWidth: requireProp('item'),
   };
 }
